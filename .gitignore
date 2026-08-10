@@ -14,6 +14,9 @@ dist-ssr
 src-tauri/target
 _seed_bundle.mjs
 
+# Tauri updater signing keys (never commit private keys)
+.tauri/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

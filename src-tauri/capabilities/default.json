@@ -13,6 +13,8 @@
     "sql:allow-close",
     "dialog:default",
     "notification:default",
+    "updater:default",
+    "process:allow-restart",
     "fs:default",
     "fs:allow-app-read",
     "fs:allow-app-write",

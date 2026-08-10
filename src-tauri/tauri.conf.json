@@ -26,6 +26,7 @@
   },
   "bundle": {
     "active": true,
+    "createUpdaterArtifacts": true,
     "targets": "nsis",
     "icon": [
       "icons/32x32.png",
@@ -38,6 +39,12 @@
   "plugins": {
     "sql": {
       "preload": ["sqlite:core_learn.db"]
+    },
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDQ2OTA4Qzk1MkQzMEQ3OUEKUldTYTF6QXRsWXlRUmgxV2FMcmNWbzdGNXlLSENwQmYybWxwUllHbzVIMm1NSXJobzNXNDBGbFYK",
+      "endpoints": [
+        "https://github.com/The-P-P/core-learn/releases/latest/download/latest.json"
+      ]
     }
   }
 }

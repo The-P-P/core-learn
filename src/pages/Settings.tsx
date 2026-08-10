@@ -1,6 +1,7 @@
+import { getVersion } from "@tauri-apps/api/app";
 import { open, save } from "@tauri-apps/plugin-dialog";
 import { readTextFile, writeTextFile } from "@tauri-apps/plugin-fs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Panel } from "../components/ui/Panel";
 import { Button } from "../components/ui/Button";
@@ -12,6 +13,7 @@ import {
   resetProgress,
 } from "../db/repository";
 import type { ProgressBackup } from "../db/types";
+import { checkForAppUpdate } from "../lib/updater";
 import { useStudyPrefsStore } from "../stores/studyPrefs";
 import {
   ACCENTS,
@@ -40,6 +42,14 @@ export function SettingsPage() {
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [resetStep, setResetStep] = useState(0);
+  const [appVersion, setAppVersion] = useState<string>("…");
+  const [checkingUpdate, setCheckingUpdate] = useState(false);
+
+  useEffect(() => {
+    void getVersion()
+      .then(setAppVersion)
+      .catch(() => setAppVersion("desconhecida"));
+  }, []);
 
   async function handleExport() {
     setError(null);
@@ -77,6 +87,26 @@ export function SettingsPage() {
       setMessage("Progresso importado com sucesso.");
     } catch (e) {
       setError(`Falha ao importar: ${String(e)}`);
+    }
+  }
+
+  async function handleCheckUpdate() {
+    setError(null);
+    setMessage(null);
+    setCheckingUpdate(true);
+    try {
+      const result = await checkForAppUpdate({ silent: false });
+      if (result.status === "up-to-date") {
+        setMessage("Você já está na versão mais recente.");
+      } else if (result.status === "declined") {
+        setMessage(`Atualização ${result.version} adiada.`);
+      } else if (result.status === "available") {
+        setMessage(`Nova versão ${result.version} disponível.`);
+      } else if (result.status === "error") {
+        setError(`Falha ao verificar atualização: ${result.message}`);
+      }
+    } finally {
+      setCheckingUpdate(false);
     }
   }
 
@@ -260,6 +290,25 @@ export function SettingsPage() {
             Importar progresso
           </Button>
         </div>
+      </Panel>
+
+      <Panel className="space-y-3">
+        <h2 className="font-serif text-xl font-semibold">Sobre / Atualizações</h2>
+        <p className="text-sm text-muted">
+          Versão instalada:{" "}
+          <span className="font-mono text-fg">{appVersion}</span>
+        </p>
+        <p className="text-sm text-muted">
+          O Core Learn verifica atualizações ao abrir. Você também pode checar
+          manualmente — o progresso em AppData é mantido.
+        </p>
+        <Button
+          variant="accent"
+          disabled={checkingUpdate}
+          onClick={() => void handleCheckUpdate()}
+        >
+          {checkingUpdate ? "Verificando…" : "Verificar atualizações"}
+        </Button>
       </Panel>
 
       <Panel className="space-y-3">

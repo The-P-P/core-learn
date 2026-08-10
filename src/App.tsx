@@ -3,6 +3,7 @@ import { HashRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Layout } from "./components/Layout";
 import { seedIfEmpty } from "./db/seed";
 import { startStudyReminderLoop } from "./lib/study-reminders";
+import { checkForAppUpdate } from "./lib/updater";
 import { Dashboard } from "./pages/Dashboard";
 import { NotesPage } from "./pages/Notes";
 import { SettingsPage } from "./pages/Settings";
@@ -32,6 +33,11 @@ export default function App() {
   useEffect(() => {
     if (!ready) return;
     return startStudyReminderLoop();
+  }, [ready]);
+
+  useEffect(() => {
+    if (!ready) return;
+    void checkForAppUpdate({ silent: true });
   }, [ready]);
 
   if (error) {
