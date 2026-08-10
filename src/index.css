@@ -1,0 +1,581 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: var(--app-bg);
+  --color-surface: var(--app-surface);
+  --color-fg: var(--app-fg);
+  --color-muted: var(--app-muted);
+  --color-border: var(--app-border);
+  --color-accent: var(--app-accent);
+  --color-accent-fg: var(--app-accent-fg);
+  --color-success: var(--app-success);
+  --color-warning: var(--app-warning);
+  --color-danger: var(--app-danger);
+  --color-track: var(--app-track);
+
+  /* Back-compat aliases used during migration */
+  --color-paper: var(--app-bg);
+  --color-ink: var(--app-fg);
+  --color-teal: var(--app-accent);
+  --color-amber: var(--app-warning);
+  --color-line: var(--app-border);
+  --color-dark-bg: var(--app-bg);
+  --color-line-dark: var(--app-border);
+
+  --font-serif: "Source Serif 4", Georgia, serif;
+  --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --dur-fast: 120ms;
+  --dur-med: 220ms;
+
+  --radius-sm: 0.375rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 0.875rem;
+  --radius-xl: 1.25rem;
+}
+
+/*
+  Motifs únicos por paleta (SVG) — sem grain genérico.
+  Cada tema define: --app-motif, --app-motif-size, --app-wash
+*/
+:root {
+  /* Caderno pautado */
+  --motif-papel: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='28' viewBox='0 0 48 28'%3E%3Cpath d='M0 27.5h48' stroke='%23c4b89a' stroke-opacity='.45' stroke-width='1' fill='none'/%3E%3Cpath d='M36 0v28' stroke='%23c97a7a' stroke-opacity='.28' stroke-width='1' fill='none'/%3E%3C/svg%3E");
+  /* Céu estrelado */
+  --motif-noite: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'%3E%3Ccircle cx='18' cy='30' r='1.1' fill='%23e8e4da' fill-opacity='.55'/%3E%3Ccircle cx='70' cy='18' r='.7' fill='%23e8e4da' fill-opacity='.35'/%3E%3Ccircle cx='120' cy='48' r='1.3' fill='%23e8e4da' fill-opacity='.5'/%3E%3Ccircle cx='180' cy='28' r='.8' fill='%23e8e4da' fill-opacity='.4'/%3E%3Ccircle cx='40' cy='90' r='.9' fill='%23e8e4da' fill-opacity='.3'/%3E%3Ccircle cx='95' cy='110' r='1.2' fill='%23e8e4da' fill-opacity='.45'/%3E%3Ccircle cx='160' cy='85' r='.7' fill='%23e8e4da' fill-opacity='.35'/%3E%3Ccircle cx='200' cy='120' r='1' fill='%23e8e4da' fill-opacity='.4'/%3E%3Ccircle cx='55' cy='160' r='.8' fill='%23e8e4da' fill-opacity='.3'/%3E%3Ccircle cx='130' cy='170' r='1.1' fill='%23e8e4da' fill-opacity='.45'/%3E%3Ccircle cx='190' cy='190' r='.7' fill='%23e8e4da' fill-opacity='.35'/%3E%3Ccircle cx='25' cy='200' r='.9' fill='%23e8e4da' fill-opacity='.3'/%3E%3Cpath d='M168 52l1.4 3.2 3.4.3-2.6 2.2.8 3.3-3-1.8-3 1.8.8-3.3-2.6-2.2 3.4-.3z' fill='%23e8e4da' fill-opacity='.22'/%3E%3C/svg%3E");
+  /* Filigrana de manuscrito */
+  --motif-pergaminho: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cpath d='M20 40c30 0 30 20 60 20s30-20 60-20' fill='none' stroke='%238b5e3c' stroke-opacity='.14' stroke-width='1.2'/%3E%3Cpath d='M30 90c25 8 40-8 65-2s40 12 55 0' fill='none' stroke='%238b5e3c' stroke-opacity='.1' stroke-width='1'/%3E%3Cpath d='M40 140c20-12 50-12 70 0s40 8 50-6' fill='none' stroke='%23a07040' stroke-opacity='.12' stroke-width='1.1'/%3E%3Ccircle cx='28' cy='42' r='2.5' fill='none' stroke='%238b5e3c' stroke-opacity='.16'/%3E%3Ccircle cx='152' cy='138' r='3' fill='none' stroke='%238b5e3c' stroke-opacity='.12'/%3E%3Cpath d='M140 30c8 4 12 12 8 20-6-2-12-6-14-14 4-2 4-4 6-6z' fill='%238b5e3c' fill-opacity='.08'/%3E%3C/svg%3E");
+  /* Folhas */
+  --motif-floresta: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cpath d='M36 70c0-28 28-48 52-36-18 12-30 28-40 48-8-2-12-8-12-12z' fill='%233d6b4f' fill-opacity='.22'/%3E%3Cpath d='M36 70c22-4 40-2 52 12' fill='none' stroke='%232f5a40' stroke-opacity='.2' stroke-width='1.2'/%3E%3Cpath d='M130 40c22 2 40 28 28 52-18-10-30-28-36-48 4-2 6-4 8-4z' fill='%234a8058' fill-opacity='.18'/%3E%3Cpath d='M158 92c-8 18-28 34-52 30 14-14 28-28 40-44 6 2 10 8 12 14z' fill='%233d6b4f' fill-opacity='.16'/%3E%3Cpath d='M70 140c18-16 46-14 58 8-20 4-40 2-58-8z' fill='%235a9060' fill-opacity='.16'/%3E%3Cpath d='M24 160c16-6 28 4 34 18-14 2-26 0-34-6v-12z' fill='%233d6b4f' fill-opacity='.14'/%3E%3C/svg%3E");
+  /* Ondas d'água */
+  --motif-oceano: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='80' viewBox='0 0 160 80'%3E%3Cpath d='M0 28c20-14 40-14 60 0s40 14 60 0 40-14 60 0' fill='none' stroke='%233a6d9a' stroke-opacity='.32' stroke-width='1.8'/%3E%3Cpath d='M0 48c20-12 40-12 60 0s40 12 60 0 40-12 60 0' fill='none' stroke='%234a88b8' stroke-opacity='.22' stroke-width='1.4'/%3E%3Cpath d='M0 64c20-10 40-10 60 0s40 10 60 0 40-10 60 0' fill='none' stroke='%233a6d9a' stroke-opacity='.16' stroke-width='1.1'/%3E%3Ccircle cx='42' cy='20' r='2.2' fill='%23ffffff' fill-opacity='.45'/%3E%3Ccircle cx='118' cy='36' r='1.6' fill='%23ffffff' fill-opacity='.35'/%3E%3C/svg%3E");
+  /* Veios de ardósia */
+  --motif-ardosia: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cpath d='M0 40h120M0 80h120M40 0v120M80 0v120' stroke='%235c6578' stroke-opacity='.07' stroke-width='1' fill='none'/%3E%3Cpath d='M0 20l120 40M0 60l120 40M0 0l120 40' stroke='%235c6578' stroke-opacity='.05' stroke-width='1' fill='none'/%3E%3C/svg%3E");
+  /* Pétalas + lua */
+  --motif-rosa: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cpath d='M150 36a18 18 0 0 1 0 36 18 18 0 1 0 0-36z' fill='%23c48b9f' fill-opacity='.14'/%3E%3Cpath d='M48 70c12-16 32-16 40 0-16 6-28 6-40 0z' fill='%23c48b9f' fill-opacity='.1'/%3E%3Cpath d='M70 130c10-14 28-12 34 4-14 4-26 2-34-4z' fill='%23b87a96' fill-opacity='.1'/%3E%3Cpath d='M140 150c14-10 28-4 30 12-12 2-24 0-30-12z' fill='%23c48b9f' fill-opacity='.09'/%3E%3Ccircle cx='40' cy='160' r='1' fill='%23ebe4ec' fill-opacity='.25'/%3E%3Ccircle cx='100' cy='40' r='.8' fill='%23ebe4ec' fill-opacity='.2'/%3E%3Ccircle cx='180' cy='100' r='1.1' fill='%23ebe4ec' fill-opacity='.22'/%3E%3C/svg%3E");
+}
+
+/* ─── Papel: caderno pautado ─── */
+:root,
+[data-theme="papel"] {
+  --app-bg: #f3eee3;
+  --app-surface: #faf6ec;
+  --app-fg: #16233f;
+  --app-muted: color-mix(in srgb, var(--app-fg) 55%, transparent);
+  --app-border: #d4cbb8;
+  --app-success: #3c8067;
+  --app-warning: #c98a3b;
+  --app-danger: #b33b3b;
+  --app-track: color-mix(in srgb, #ffffff 45%, transparent);
+  --app-accent: #2f6e6e;
+  --app-accent-fg: #ffffff;
+  --app-motif: var(--motif-papel);
+  --app-motif-size: 48px 28px;
+  --app-wash:
+    linear-gradient(90deg, rgba(201, 122, 122, 0.06) 0 36px, transparent 36px),
+    linear-gradient(168deg, #f7f2e6 0%, #efe8d8 50%, #e8e0ce 100%);
+  --space-page: 2rem;
+  --space-row: 0.75rem;
+  --control-h: 2.25rem;
+  --text-base-size: 1rem;
+  color-scheme: light;
+}
+
+/* ─── Noite: céu estrelado + luar ─── */
+[data-theme="noite"] {
+  --app-bg: #0b101c;
+  --app-surface: #141b2c;
+  --app-fg: #e8e4da;
+  --app-muted: color-mix(in srgb, var(--app-fg) 58%, transparent);
+  --app-border: #243049;
+  --app-success: #5aaf8a;
+  --app-warning: #d4a054;
+  --app-danger: #e07070;
+  --app-track: color-mix(in srgb, #ffffff 6%, transparent);
+  --app-accent: #5a9e9e;
+  --app-accent-fg: #0f1523;
+  --app-motif: var(--motif-noite);
+  --app-motif-size: 220px 220px;
+  --app-wash:
+    radial-gradient(circle 180px at 85% 12%, rgba(232, 228, 218, 0.12), transparent 55%),
+    radial-gradient(ellipse 70% 45% at 50% 100%, rgba(30, 60, 100, 0.35), transparent 55%),
+    linear-gradient(165deg, #12192a 0%, #0b101c 50%, #070a12 100%);
+  color-scheme: dark;
+}
+
+/* ─── Pergaminho: filigrana de manuscrito ─── */
+[data-theme="pergaminho"] {
+  --app-bg: #e9d8b8;
+  --app-surface: #f4e6c8;
+  --app-fg: #3a2a1a;
+  --app-muted: color-mix(in srgb, var(--app-fg) 58%, transparent);
+  --app-border: #c9b089;
+  --app-success: #5a7a4a;
+  --app-warning: #b87a2e;
+  --app-danger: #a03a2a;
+  --app-track: color-mix(in srgb, #ffffff 35%, transparent);
+  --app-accent: #8b5e3c;
+  --app-accent-fg: #faf1e0;
+  --app-motif: var(--motif-pergaminho);
+  --app-motif-size: 180px 180px;
+  --app-wash:
+    radial-gradient(ellipse 40% 30% at 10% 15%, rgba(160, 90, 40, 0.16), transparent 60%),
+    radial-gradient(ellipse 35% 28% at 90% 80%, rgba(120, 70, 30, 0.14), transparent 55%),
+    linear-gradient(160deg, #f0e0c0 0%, #e6d2a8 50%, #dcc49a 100%);
+  color-scheme: light;
+}
+
+/* ─── Floresta: folhas ─── */
+[data-theme="floresta"] {
+  --app-bg: #e2ebe3;
+  --app-surface: #eef6f0;
+  --app-fg: #1a2e24;
+  --app-muted: color-mix(in srgb, var(--app-fg) 55%, transparent);
+  --app-border: #b7c9bb;
+  --app-success: #2f6b4a;
+  --app-warning: #b8862e;
+  --app-danger: #a33d3d;
+  --app-track: color-mix(in srgb, #ffffff 45%, transparent);
+  --app-accent: #3d6b4f;
+  --app-accent-fg: #f7fbf8;
+  --app-motif: var(--motif-floresta);
+  --app-motif-size: 200px 200px;
+  --app-wash:
+    radial-gradient(ellipse 60% 40% at 15% 0%, rgba(100, 160, 90, 0.35), transparent 55%),
+    radial-gradient(ellipse 50% 45% at 95% 70%, rgba(50, 100, 70, 0.18), transparent 50%),
+    linear-gradient(170deg, #eaf2eb 0%, #d5e5d9 55%, #c5d8cb 100%);
+  color-scheme: light;
+}
+
+/* ─── Oceano: ondas ─── */
+[data-theme="oceano"] {
+  --app-bg: #e2ebf3;
+  --app-surface: #eff5fa;
+  --app-fg: #152536;
+  --app-muted: color-mix(in srgb, var(--app-fg) 55%, transparent);
+  --app-border: #b8c7d6;
+  --app-success: #2f7a62;
+  --app-warning: #c4893a;
+  --app-danger: #b03d45;
+  --app-track: color-mix(in srgb, #ffffff 45%, transparent);
+  --app-accent: #3a6d9a;
+  --app-accent-fg: #f6f9fc;
+  --app-motif: var(--motif-oceano);
+  --app-motif-size: 160px 80px;
+  --app-wash:
+    radial-gradient(ellipse 90% 50% at 50% -5%, rgba(160, 210, 240, 0.65), transparent 55%),
+    radial-gradient(ellipse 50% 40% at 100% 80%, rgba(50, 110, 170, 0.2), transparent 50%),
+    linear-gradient(180deg, #dceef8 0%, #c8e0f0 40%, #b5d4e8 100%);
+  color-scheme: light;
+}
+
+/* ─── Ardósia: veios de pedra ─── */
+[data-theme="ardosia"] {
+  --app-bg: #e6e8ec;
+  --app-surface: #f3f4f7;
+  --app-fg: #1c1f26;
+  --app-muted: color-mix(in srgb, var(--app-fg) 55%, transparent);
+  --app-border: #c4c9d2;
+  --app-success: #3d7a5c;
+  --app-warning: #b8842e;
+  --app-danger: #b03d3d;
+  --app-track: color-mix(in srgb, #ffffff 50%, transparent);
+  --app-accent: #5c6578;
+  --app-accent-fg: #fafbfc;
+  --app-motif: var(--motif-ardosia);
+  --app-motif-size: 120px 120px;
+  --app-wash:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, transparent 42%),
+    linear-gradient(180deg, #eceef2 0%, #dde1e8 55%, #d0d5de 100%);
+  color-scheme: light;
+}
+
+/* ─── Rosa noite: lua + pétalas ─── */
+[data-theme="rosa-noite"] {
+  --app-bg: #16101c;
+  --app-surface: #221a2a;
+  --app-fg: #ebe4ec;
+  --app-muted: color-mix(in srgb, var(--app-fg) 58%, transparent);
+  --app-border: #3a3045;
+  --app-success: #6fb89a;
+  --app-warning: #d4a054;
+  --app-danger: #e08090;
+  --app-track: color-mix(in srgb, #ffffff 7%, transparent);
+  --app-accent: #c48b9f;
+  --app-accent-fg: #1a1420;
+  --app-motif: var(--motif-rosa);
+  --app-motif-size: 200px 200px;
+  --app-wash:
+    radial-gradient(circle 160px at 82% 10%, rgba(236, 210, 220, 0.16), transparent 55%),
+    radial-gradient(ellipse 55% 45% at 10% 85%, rgba(120, 60, 110, 0.3), transparent 55%),
+    linear-gradient(165deg, #1e1526 0%, #16101c 55%, #100c16 100%);
+  color-scheme: dark;
+}
+
+/* ─── Alto contraste: limpo ─── */
+[data-theme="alto-contraste"] {
+  --app-bg: #ffffff;
+  --app-surface: #ffffff;
+  --app-fg: #000000;
+  --app-muted: #333333;
+  --app-border: #000000;
+  --app-success: #006633;
+  --app-warning: #996600;
+  --app-danger: #990000;
+  --app-track: #e6e6e6;
+  --app-accent: #005fcc;
+  --app-accent-fg: #ffffff;
+  --app-motif: none;
+  --app-motif-size: auto;
+  --app-wash: #ffffff;
+  color-scheme: light;
+}
+
+/* Accent overlays — override accent only */
+[data-accent="teal"] {
+  --app-accent: #2f6e6e;
+  --app-accent-fg: #ffffff;
+}
+[data-theme="noite"][data-accent="teal"],
+[data-theme="rosa-noite"][data-accent="teal"] {
+  --app-accent: #5a9e9e;
+  --app-accent-fg: #0f1523;
+}
+
+[data-accent="azul"] {
+  --app-accent: #3a6d9a;
+  --app-accent-fg: #ffffff;
+}
+[data-theme="noite"][data-accent="azul"],
+[data-theme="rosa-noite"][data-accent="azul"] {
+  --app-accent: #6a9fd4;
+  --app-accent-fg: #0f1523;
+}
+
+[data-accent="verde"] {
+  --app-accent: #3d6b4f;
+  --app-accent-fg: #ffffff;
+}
+[data-theme="noite"][data-accent="verde"],
+[data-theme="rosa-noite"][data-accent="verde"] {
+  --app-accent: #6ab08a;
+  --app-accent-fg: #0f1523;
+}
+
+[data-accent="ambar"] {
+  --app-accent: #c98a3b;
+  --app-accent-fg: #1a1408;
+}
+[data-theme="noite"][data-accent="ambar"],
+[data-theme="rosa-noite"][data-accent="ambar"] {
+  --app-accent: #e0a85a;
+  --app-accent-fg: #1a1408;
+}
+
+[data-accent="rosa"] {
+  --app-accent: #b86b84;
+  --app-accent-fg: #ffffff;
+}
+[data-theme="noite"][data-accent="rosa"],
+[data-theme="rosa-noite"][data-accent="rosa"] {
+  --app-accent: #d494ac;
+  --app-accent-fg: #1a1420;
+}
+
+[data-theme="alto-contraste"][data-accent="teal"] {
+  --app-accent: #006666;
+  --app-accent-fg: #ffffff;
+}
+[data-theme="alto-contraste"][data-accent="azul"] {
+  --app-accent: #005fcc;
+  --app-accent-fg: #ffffff;
+}
+[data-theme="alto-contraste"][data-accent="verde"] {
+  --app-accent: #006633;
+  --app-accent-fg: #ffffff;
+}
+[data-theme="alto-contraste"][data-accent="ambar"] {
+  --app-accent: #996600;
+  --app-accent-fg: #ffffff;
+}
+[data-theme="alto-contraste"][data-accent="rosa"] {
+  --app-accent: #990066;
+  --app-accent-fg: #ffffff;
+}
+
+[data-density="comfortable"] {
+  --space-page: 2rem;
+  --space-row: 0.75rem;
+  --control-h: 2.25rem;
+  --text-base-size: 1rem;
+}
+
+[data-density="compact"] {
+  --space-page: 1.25rem;
+  --space-row: 0.5rem;
+  --control-h: 1.875rem;
+  --text-base-size: 0.9375rem;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--text-base-size);
+  background-color: var(--app-bg);
+  background-image: var(--app-motif), var(--app-wash);
+  background-size: var(--app-motif-size, 200px), cover;
+  background-repeat: repeat, no-repeat;
+  background-attachment: fixed, fixed;
+  background-position: 0 0, center;
+  color: var(--app-fg);
+  -webkit-font-smoothing: antialiased;
+  transition: color var(--dur-med) var(--ease-out);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  border-radius: var(--radius-md);
+}
+
+:focus-visible {
+  outline: 2px solid var(--app-accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Atmosphere lives on body; shell stays transparent so motif shows through */
+.app-shell {
+  background: transparent;
+  min-height: 100%;
+}
+
+.app-header {
+  box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--app-accent) 35%, transparent);
+}
+
+/* Swatches in settings / picker preview the real motif */
+.theme-preview-swatch {
+  background-color: var(--app-bg);
+  background-image: var(--app-motif), var(--app-wash);
+  background-size: var(--app-motif-size, 200px), cover;
+  background-repeat: repeat, no-repeat;
+  background-position: 0 0, center;
+}
+
+.accordion-grid {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--dur-med) var(--ease-out);
+}
+
+.accordion-grid[data-open="true"] {
+  grid-template-rows: 1fr;
+}
+
+.accordion-grid > .accordion-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+@keyframes check-pop {
+  0% {
+    transform: scale(0.85);
+  }
+  55% {
+    transform: scale(1.12);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes progress-pulse {
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.25);
+  }
+}
+
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(48px) rotate(180deg);
+    opacity: 0;
+  }
+}
+
+.animate-check-pop {
+  animation: check-pop var(--dur-med) var(--ease-spring);
+}
+
+.animate-progress-pulse {
+  animation: progress-pulse 480ms var(--ease-out);
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--app-border) 40%, transparent) 0%,
+    color-mix(in srgb, var(--app-border) 80%, transparent) 50%,
+    color-mix(in srgb, var(--app-border) 40%, transparent) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shine 1.2s ease-in-out infinite;
+}
+
+@keyframes skeleton-shine {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+/* Markdown preview (resumos) */
+.md-preview {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--app-fg);
+}
+
+.md-preview > :first-child {
+  margin-top: 0;
+}
+
+.md-preview > :last-child {
+  margin-bottom: 0;
+}
+
+.md-preview h1,
+.md-preview h2,
+.md-preview h3 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 1.2em 0 0.45em;
+}
+
+.md-preview h1 {
+  font-size: 1.45rem;
+}
+
+.md-preview h2 {
+  font-size: 1.2rem;
+}
+
+.md-preview h3 {
+  font-size: 1.05rem;
+}
+
+.md-preview p {
+  margin: 0.55em 0;
+}
+
+.md-preview ul,
+.md-preview ol {
+  margin: 0.55em 0;
+  padding-left: 1.35em;
+}
+
+.md-preview li {
+  margin: 0.2em 0;
+}
+
+.md-preview li > p {
+  margin: 0.2em 0;
+}
+
+.md-preview blockquote {
+  margin: 0.8em 0;
+  padding-left: 0.9em;
+  border-left: 3px solid var(--app-accent);
+  color: var(--app-muted);
+}
+
+.md-preview code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: color-mix(in srgb, var(--app-border) 45%, transparent);
+  padding: 0.1em 0.35em;
+}
+
+.md-preview pre {
+  margin: 0.8em 0;
+  padding: 0.75rem 0.9rem;
+  overflow-x: auto;
+  background: color-mix(in srgb, var(--app-border) 35%, transparent);
+  border: 1px solid var(--app-border);
+}
+
+.md-preview pre code {
+  background: transparent;
+  padding: 0;
+  font-size: 0.8rem;
+}
+
+.md-preview a {
+  color: var(--app-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.md-preview hr {
+  border: none;
+  border-top: 1px solid var(--app-border);
+  margin: 1.2em 0;
+}
+
+.md-preview table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.8em 0;
+  font-size: 0.9rem;
+}
+
+.md-preview th,
+.md-preview td {
+  border: 1px solid var(--app-border);
+  padding: 0.35rem 0.5rem;
+  text-align: left;
+}
+
+.md-preview th {
+  background: color-mix(in srgb, var(--app-border) 30%, transparent);
+}
+
+.md-preview input[type="checkbox"] {
+  margin-right: 0.4em;
+}
