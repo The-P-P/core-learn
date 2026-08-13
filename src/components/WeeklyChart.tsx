@@ -83,14 +83,13 @@ function ValueLabel(props: {
 }
 
 export function WeeklyChart({ data, ctaHref = "/" }: WeeklyChartProps) {
-  const palette = useThemeStore((s) => s.palette);
   const accent = useThemeStore((s) => s.accent);
   const reducedMotion = useThemeStore((s) => s.reducedMotion);
   const [colors, setColors] = useState(() => chartColors());
 
   useEffect(() => {
     setColors(chartColors());
-  }, [palette, accent]);
+  }, [accent]);
 
   const insights = useMemo(() => deriveWeeklyInsights(data), [data]);
 

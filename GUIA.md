@@ -173,9 +173,9 @@ Na barra superior, abra **Configurações**.
 
 ### Aparência
 
-- **Paleta** — tema de cores do app
+- **Background** — vídeo ou foto de fundo (atmosfera principal do app)
 - **Acento** — cor de destaque
-- **Densidade** — **Confortável** ou **Compacto**
+- **Densidade** — Espaçoso, Confortável, Compacto ou Denso
 
 As mudanças aplicam na hora.
 

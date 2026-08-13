@@ -9,7 +9,7 @@ export function Panel({
   return (
     <div
       className={cn(
-        "rounded-[var(--radius-lg)] border border-border bg-surface/60 p-4",
+        "panel-surface rounded-[var(--radius-lg)] border border-border bg-surface/60 p-4",
         className,
       )}
       {...rest}

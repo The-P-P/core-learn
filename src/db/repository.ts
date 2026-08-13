@@ -400,6 +400,17 @@ export async function setTopicCompleted(topicId: string, completed: boolean) {
        WHERE id = $1`,
       [topicId],
     );
+    // Remove the matching completed event so meta / streak / weekly chart reverse.
+    await db.execute(
+      `DELETE FROM study_log
+       WHERE id = (
+         SELECT id FROM study_log
+         WHERE topic_id = $1 AND event = 'completed'
+         ORDER BY created_at DESC, id DESC
+         LIMIT 1
+       )`,
+      [topicId],
+    );
     await logEvent(topicId, "reopened");
   }
 }

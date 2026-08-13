@@ -1,27 +1,36 @@
 import { getVersion } from "@tauri-apps/api/app";
 import { open, save } from "@tauri-apps/plugin-dialog";
 import { readTextFile, writeTextFile } from "@tauri-apps/plugin-fs";
+import { ImagePlus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Panel } from "../components/ui/Panel";
 import { Button } from "../components/ui/Button";
 import { SegmentedControl } from "../components/ui/SegmentedControl";
-import { ThemePreview } from "../components/ui/ThemePreview";
 import {
   exportProgress,
   importProgress,
   resetProgress,
 } from "../db/repository";
 import type { ProgressBackup } from "../db/types";
+import {
+  deleteCustomBackgroundFile,
+  pickAndImportCustomBackground,
+  resolveCustomMediaUrl,
+} from "../lib/custom-backgrounds";
 import { checkForAppUpdate } from "../lib/updater";
 import { useStudyPrefsStore } from "../stores/studyPrefs";
 import {
   ACCENTS,
   ACCENT_META,
+  BUILTIN_BACKGROUND_META,
+  BUILTIN_BACKGROUNDS,
   DENSITIES,
-  PALETTES,
+  DENSITY_META,
   useThemeStore,
   type Accent,
+  type BackgroundId,
+  type BuiltinBackground,
   type Density,
 } from "../stores/theme";
 import { useTourStore } from "../stores/tour";
@@ -29,8 +38,19 @@ import { useTourStore } from "../stores/tour";
 export function SettingsPage() {
   const navigate = useNavigate();
   const startTour = useTourStore((s) => s.start);
-  const { palette, accent, density, setPalette, setAccent, setDensity } =
-    useThemeStore();
+  const {
+    accent,
+    density,
+    backgroundId,
+    backgroundDim,
+    customBackgrounds,
+    setAccent,
+    setDensity,
+    setBackgroundId,
+    setBackgroundDim,
+    addCustomBackground,
+    removeCustomBackground,
+  } = useThemeStore();
   const {
     dailyGoal,
     notificationsEnabled,
@@ -44,12 +64,55 @@ export function SettingsPage() {
   const [resetStep, setResetStep] = useState(0);
   const [appVersion, setAppVersion] = useState<string>("…");
   const [checkingUpdate, setCheckingUpdate] = useState(false);
+  const [importingBg, setImportingBg] = useState(false);
+  const [customThumbs, setCustomThumbs] = useState<Record<string, string>>({});
 
   useEffect(() => {
     void getVersion()
       .then(setAppVersion)
       .catch(() => setAppVersion("desconhecida"));
   }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      const next: Record<string, string> = {};
+      for (const bg of customBackgrounds) {
+        const url = await resolveCustomMediaUrl(bg.path);
+        if (url) next[bg.id] = url;
+      }
+      if (!cancelled) setCustomThumbs(next);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [customBackgrounds]);
+
+  async function handleAddBackground() {
+    setError(null);
+    setImportingBg(true);
+    try {
+      const bg = await pickAndImportCustomBackground();
+      if (!bg) return;
+      addCustomBackground(bg);
+      setMessage(`Background “${bg.name}” adicionado.`);
+    } catch (e) {
+      setError(`Falha ao adicionar background: ${String(e)}`);
+    } finally {
+      setImportingBg(false);
+    }
+  }
+
+  async function handleRemoveCustom(id: string, path: string) {
+    setError(null);
+    try {
+      await deleteCustomBackgroundFile(path);
+      removeCustomBackground(id);
+      setMessage("Background customizado removido.");
+    } catch (e) {
+      setError(`Falha ao remover background: ${String(e)}`);
+    }
+  }
 
   async function handleExport() {
     setError(null);
@@ -210,25 +273,150 @@ export function SettingsPage() {
         <div>
           <h2 className="font-serif text-xl font-semibold">Aparência</h2>
           <p className="mt-1 text-sm text-muted">
-            Paleta, acento e densidade — mudanças aplicadas na hora.
+            Background, acento e densidade — mudanças aplicadas na hora.
           </p>
         </div>
 
-        <div>
-          <p className="mb-2 font-mono text-[11px] uppercase tracking-wider text-accent">
-            Paleta
-          </p>
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-            {PALETTES.map((id) => (
-              <ThemePreview
-                key={id}
-                palette={id}
-                accent={accent}
-                selected={palette === id}
-                onSelect={() => setPalette(id)}
-              />
-            ))}
+        <div className="space-y-3">
+          <div>
+            <p className="mb-1 font-mono text-[11px] uppercase tracking-wider text-accent">
+              Background
+            </p>
+            <p className="text-sm text-muted">
+              Atmosfera principal do app em todas as telas.
+            </p>
           </div>
+
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+            <button
+              type="button"
+              onClick={() => setBackgroundId("none")}
+              aria-pressed={backgroundId === "none"}
+              className={`overflow-hidden rounded-[var(--radius-md)] border text-left transition-colors ${
+                backgroundId === "none"
+                  ? "border-accent ring-1 ring-accent/40"
+                  : "border-border hover:border-accent/60"
+              }`}
+            >
+              <div className="flex aspect-video items-center justify-center bg-track text-xs text-muted">
+                Nenhum
+              </div>
+              <div className="px-2 py-1.5 font-mono text-[10px] uppercase tracking-wider">
+                Cor sólida
+              </div>
+            </button>
+
+            {BUILTIN_BACKGROUNDS.map((id: BuiltinBackground) => {
+              const meta = BUILTIN_BACKGROUND_META[id];
+              const selected = backgroundId === id;
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => setBackgroundId(id)}
+                  aria-pressed={selected}
+                  className={`overflow-hidden rounded-[var(--radius-md)] border text-left transition-colors ${
+                    selected
+                      ? "border-accent ring-1 ring-accent/40"
+                      : "border-border hover:border-accent/60"
+                  }`}
+                >
+                  <img
+                    src={meta.thumb}
+                    alt=""
+                    className="aspect-video w-full object-cover"
+                  />
+                  <div className="truncate px-2 py-1.5 font-mono text-[10px] uppercase tracking-wider">
+                    {meta.label}
+                  </div>
+                </button>
+              );
+            })}
+
+            {customBackgrounds.map((bg) => {
+              const id: BackgroundId = `custom:${bg.id}`;
+              const selected = backgroundId === id;
+              const thumb = customThumbs[bg.id];
+              return (
+                <div
+                  key={bg.id}
+                  className={`relative overflow-hidden rounded-[var(--radius-md)] border ${
+                    selected
+                      ? "border-accent ring-1 ring-accent/40"
+                      : "border-border"
+                  }`}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setBackgroundId(id)}
+                    aria-pressed={selected}
+                    className="block w-full text-left"
+                  >
+                    {thumb ? (
+                      bg.kind === "video" ? (
+                        <video
+                          src={thumb}
+                          muted
+                          playsInline
+                          className="aspect-video w-full object-cover"
+                        />
+                      ) : (
+                        <img
+                          src={thumb}
+                          alt=""
+                          className="aspect-video w-full object-cover"
+                        />
+                      )
+                    ) : (
+                      <div className="flex aspect-video items-center justify-center bg-track text-xs text-muted">
+                        Custom
+                      </div>
+                    )}
+                    <div className="truncate px-2 py-1.5 pr-8 font-mono text-[10px] uppercase tracking-wider">
+                      {bg.name}
+                    </div>
+                  </button>
+                  <button
+                    type="button"
+                    title="Remover"
+                    onClick={() => void handleRemoveCustom(bg.id, bg.path)}
+                    className="absolute right-1 top-1 rounded-[var(--radius-sm)] border border-border bg-surface/80 p-1 text-muted hover:text-danger"
+                  >
+                    <Trash2 size={12} />
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              variant="accent"
+              disabled={importingBg}
+              onClick={() => void handleAddBackground()}
+            >
+              <span className="inline-flex items-center gap-2">
+                <ImagePlus size={14} />
+                {importingBg ? "Importando…" : "Adicionar foto/vídeo"}
+              </span>
+            </Button>
+          </div>
+
+          <label className="block space-y-2">
+            <span className="font-mono text-[11px] uppercase tracking-wider text-accent">
+              Opacidade do véu ({Math.round(backgroundDim * 100)}%)
+            </span>
+            <input
+              type="range"
+              min={35}
+              max={75}
+              step={1}
+              value={Math.round(backgroundDim * 100)}
+              onChange={(e) => setBackgroundDim(Number(e.target.value) / 100)}
+              disabled={backgroundId === "none"}
+              className="w-full max-w-md accent-[var(--app-accent)] disabled:opacity-40"
+            />
+          </label>
         </div>
 
         <div>
@@ -270,7 +458,7 @@ export function SettingsPage() {
             onChange={setDensity}
             options={DENSITIES.map((id) => ({
               id,
-              label: id === "comfortable" ? "Confortável" : "Compacto",
+              label: DENSITY_META[id].label,
             }))}
           />
         </div>

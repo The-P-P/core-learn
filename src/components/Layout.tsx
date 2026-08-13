@@ -6,6 +6,7 @@ import { cn } from "../lib/cn";
 import { pageTransition, pageVariants } from "../lib/motion";
 import { useThemeStore } from "../stores/theme";
 import { useTourStore } from "../stores/tour";
+import { StudyBackground } from "./StudyBackground";
 import { TourOverlay } from "./Tour/TourOverlay";
 
 const links = [
@@ -34,8 +35,15 @@ export function Layout() {
     void startTour();
   }, [hydrated, hasCompleted, active, startTour]);
 
+  const backgroundId = useThemeStore((s) => s.backgroundId);
+  const bgActive = backgroundId !== "none";
+
   return (
-    <div className="app-shell min-h-full text-fg">
+    <div
+      className="app-shell relative min-h-full text-fg"
+      data-study-bg={bgActive ? "on" : undefined}
+    >
+      <StudyBackground />
       <header className="app-header sticky top-0 z-30 border-b border-border bg-surface/55 backdrop-blur-xl">
         <div
           className="mx-auto flex max-w-6xl items-center justify-between gap-6 px-6"
@@ -70,7 +78,7 @@ export function Layout() {
         </div>
       </header>
       <main
-        className="mx-auto max-w-6xl px-6"
+        className="relative z-10 mx-auto max-w-6xl px-6"
         style={{ paddingBlock: "var(--space-page)" }}
       >
         <AnimatePresence mode="wait">

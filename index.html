@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR" data-theme="papel" data-accent="teal" data-density="comfortable">
+<html lang="pt-BR" class="dark" data-accent="teal" data-density="comfortable">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
@@ -14,24 +14,20 @@
     <script>
       (function () {
         try {
-          var darkPalettes = { noite: 1, "rosa-noite": 1 };
           var raw = localStorage.getItem("core-learn-appearance");
-          var palette = "papel";
           var accent = "teal";
           var density = "comfortable";
+          var densities = { spacious: 1, comfortable: 1, compact: 1, dense: 1 };
           if (raw) {
             var parsed = JSON.parse(raw);
-            if (parsed.palette) palette = parsed.palette;
             if (parsed.accent) accent = parsed.accent;
-            if (parsed.density) density = parsed.density;
-          } else if (localStorage.getItem("core-learn-theme") === "dark") {
-            palette = "noite";
+            if (parsed.density && densities[parsed.density]) density = parsed.density;
           }
           var root = document.documentElement;
-          root.setAttribute("data-theme", palette);
+          root.classList.add("dark");
+          root.removeAttribute("data-theme");
           root.setAttribute("data-accent", accent);
           root.setAttribute("data-density", density);
-          if (darkPalettes[palette]) root.classList.add("dark");
         } catch (e) {}
       })();
     </script>

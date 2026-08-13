@@ -20,19 +20,71 @@
     "fs:allow-app-write",
     {
       "identifier": "fs:allow-write-text-file",
-      "allow": [{ "path": "$DOWNLOAD/**" }, { "path": "$DOCUMENT/**" }, { "path": "$DESKTOP/**" }]
+      "allow": [
+        { "path": "$DOWNLOAD/**" },
+        { "path": "$DOCUMENT/**" },
+        { "path": "$DESKTOP/**" }
+      ]
     },
     {
       "identifier": "fs:allow-write-file",
-      "allow": [{ "path": "$DOWNLOAD/**" }, { "path": "$DOCUMENT/**" }, { "path": "$DESKTOP/**" }]
+      "allow": [
+        { "path": "$DOWNLOAD/**" },
+        { "path": "$DOCUMENT/**" },
+        { "path": "$DESKTOP/**" },
+        { "path": "$APPLOCALDATA/backgrounds/**" }
+      ]
     },
     {
       "identifier": "fs:allow-read-text-file",
-      "allow": [{ "path": "$DOWNLOAD/**" }, { "path": "$DOCUMENT/**" }, { "path": "$DESKTOP/**" }]
+      "allow": [
+        { "path": "$DOWNLOAD/**" },
+        { "path": "$DOCUMENT/**" },
+        { "path": "$DESKTOP/**" }
+      ]
+    },
+    {
+      "identifier": "fs:allow-read-file",
+      "allow": [
+        { "path": "$DOWNLOAD/**" },
+        { "path": "$DOCUMENT/**" },
+        { "path": "$DESKTOP/**" },
+        { "path": "$PICTURE/**" },
+        { "path": "$VIDEO/**" },
+        { "path": "$APPLOCALDATA/backgrounds/**" }
+      ]
     },
     {
       "identifier": "fs:allow-exists",
-      "allow": [{ "path": "$DOWNLOAD/**" }, { "path": "$DOCUMENT/**" }, { "path": "$DESKTOP/**" }]
+      "allow": [
+        { "path": "$DOWNLOAD/**" },
+        { "path": "$DOCUMENT/**" },
+        { "path": "$DESKTOP/**" },
+        { "path": "$APPLOCALDATA/backgrounds/**" },
+        { "path": "$APPLOCALDATA/backgrounds" }
+      ]
+    },
+    {
+      "identifier": "fs:allow-mkdir",
+      "allow": [
+        { "path": "$APPLOCALDATA/backgrounds" },
+        { "path": "$APPLOCALDATA/backgrounds/**" }
+      ]
+    },
+    {
+      "identifier": "fs:allow-copy-file",
+      "allow": [
+        { "path": "$DOWNLOAD/**" },
+        { "path": "$DOCUMENT/**" },
+        { "path": "$DESKTOP/**" },
+        { "path": "$PICTURE/**" },
+        { "path": "$VIDEO/**" },
+        { "path": "$APPLOCALDATA/backgrounds/**" }
+      ]
+    },
+    {
+      "identifier": "fs:allow-remove",
+      "allow": [{ "path": "$APPLOCALDATA/backgrounds/**" }]
     }
   ]
 }
