@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { HashRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Layout } from "./components/Layout";
+import { Logo } from "./components/Logo";
 import { seedIfEmpty } from "./db/seed";
 import { startStudyReminderLoop } from "./lib/study-reminders";
 import { checkForAppUpdate } from "./lib/updater";
@@ -44,7 +45,10 @@ export default function App() {
     return (
       <div className="app-shell flex min-h-full items-center justify-center px-6 text-fg">
         <div className="max-w-md rounded-[var(--radius-xl)] border border-border bg-surface/60 p-6">
-          <h1 className="font-serif text-2xl font-semibold">Core Learn</h1>
+          <div className="flex items-center gap-2.5">
+            <Logo size={28} />
+            <h1 className="font-serif text-2xl font-semibold">Core Learn</h1>
+          </div>
           <p className="mt-3 text-sm text-danger">
             Não foi possível iniciar o banco de dados.
           </p>
@@ -59,6 +63,7 @@ export default function App() {
   if (!ready) {
     return (
       <div className="app-shell flex min-h-full flex-col items-center justify-center gap-3 font-serif text-fg">
+        <Logo size={48} />
         <div className="h-1 w-32 overflow-hidden rounded-full border border-border">
           <div className="skeleton h-full w-full" />
         </div>

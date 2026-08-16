@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="none" role="img" aria-label="Core Learn">
+  <!-- App icon background -->
+  <rect width="1024" height="1024" rx="192" fill="#0b101c"/>
+  <!-- Soft inner panel -->
+  <rect x="72" y="72" width="880" height="880" rx="160" fill="#141b2c"/>
+  <!-- Geometric C (centered mark with ~10% padding from inner panel) -->
+  <path
+    d="M680 310A280 280 0 1 0 680 714"
+    stroke="#5a9e9e"
+    stroke-width="100"
+    stroke-linecap="round"
+  />
+  <!-- Nucleus -->
+  <circle cx="470" cy="512" r="140" fill="#e8e4da"/>
+  <!-- Nucleolus -->
+  <circle cx="515" cy="480" r="44" fill="#d4a054"/>
+</svg>

@@ -6,6 +6,7 @@ import { cn } from "../lib/cn";
 import { pageTransition, pageVariants } from "../lib/motion";
 import { useThemeStore } from "../stores/theme";
 import { useTourStore } from "../stores/tour";
+import { Logo } from "./Logo";
 import { StudyBackground } from "./StudyBackground";
 import { TourOverlay } from "./Tour/TourOverlay";
 
@@ -51,8 +52,9 @@ export function Layout() {
         >
           <Link
             to="/"
-            className="font-serif text-3xl font-semibold leading-none tracking-tight text-fg transition-opacity hover:opacity-80 sm:text-4xl"
+            className="inline-flex items-center gap-2.5 font-serif text-3xl font-semibold leading-none tracking-tight text-fg transition-opacity hover:opacity-80 sm:text-4xl"
           >
+            <Logo size={36} />
             Core Learn
           </Link>
           <nav data-tour="nav" className="flex items-center gap-1">
